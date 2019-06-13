@@ -1,4 +1,4 @@
-package javka.persons.lvlAndStamina;
+package javka.persons.chracters.utils;
 
 public class Stamina {
     private int stamina;
@@ -25,6 +25,10 @@ public class Stamina {
         return stamina;
     }
 
+    /*
+    * вот это не совсем понятно, ну выведется сообщение в консоль ну и что?
+    * действие оно не отменяет, надо подумать над механизмом взаимодейтсвия стамины персонажей и игры
+    * */
     public int subStamina(int value) {
         if (stamina - value < 0) {
             System.out.println("Невозможно выполнить: Для данного действия недостаточно выносливости");
