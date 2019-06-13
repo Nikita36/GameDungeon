@@ -1,6 +1,6 @@
 package javka.persons.player;
 
-import javka.persons.AbstractPerson;
+import javka.persons.chracters.AbstractPerson;
 
 public class Player {
    private String name;
@@ -10,6 +10,10 @@ public class Player {
         this.name = name;
         this.personage = personage;
     }
+
+    // Пустой конструктор лучше всегда делать, иначе ты ограничиваешь себя в шаблонных действиях, как например при создании игроков
+    // у тебя дублировался код
+    public Player() {}
 
     public AbstractPerson getPersonage() {
         return personage;
