@@ -1,4 +1,4 @@
-package javka.persons.player;
+package javka.player;
 
 import javka.persons.AbstractPerson;
 

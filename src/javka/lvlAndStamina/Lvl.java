@@ -1,4 +1,4 @@
-package javka.persons.lvlAndStamina;
+package javka.lvlAndStamina;
 
 public class Lvl {
     private int lvl;

@@ -1,4 +1,4 @@
-package javka.persons.lvlAndStamina;
+package javka.lvlAndStamina;
 
 public class Stamina {
     private int stamina;
@@ -25,11 +25,12 @@ public class Stamina {
         return stamina;
     }
 
-    public int subStamina(int value) {
+    public boolean subStamina(int value) {
         if (stamina - value < 0) {
             System.out.println("Невозможно выполнить: Для данного действия недостаточно выносливости");
+            return false;
         } else
             stamina -= value;
-        return stamina;
+        return true;
     }
 }

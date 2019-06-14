@@ -1,5 +1,9 @@
 package javka.persons;
 
+import javka.persons.allTypePersons.Dwarf;
+import javka.persons.allTypePersons.Elf;
+import javka.persons.allTypePersons.ManMagician;
+
 public class PersonFactory {
     boolean man = false;
     boolean elf = false;
