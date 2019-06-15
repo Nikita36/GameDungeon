@@ -19,4 +19,12 @@ public class Dwarf extends AbstractPerson {
         isSpecialAction = action(specialAction, 1);
         return isSpecialAction;
     }
+    public Dwarf clone(){
+        Dwarf clone=new Dwarf();
+        clone.setStamina(stamina.getStamina());
+        clone.setLvl(lvl.getLvl());
+        clone.setDownHill(downHill);
+        clone.setSpecialAction(specialAction);
+        return clone;
+    }
 }

@@ -7,7 +7,7 @@ import javka.persons.AbstractPerson;
 public class ManMagician extends AbstractPerson {
     public ManMagician(){
         stamina=new Stamina(30);
-        downHill=12;
+        downHill=13;
         lvl=new Lvl();
         specialAction=15;
     }
@@ -26,5 +26,13 @@ public class ManMagician extends AbstractPerson {
     @Override
     public boolean specialAction() {//Вот это издержки не идеальной архитектуры
         return false;
+    }
+    public ManMagician clone(){
+        ManMagician clone=new ManMagician();
+        clone.setStamina(stamina.getStamina());
+        clone.setLvl(lvl.getLvl());
+        clone.setDownHill(downHill);
+        clone.setSpecialAction(specialAction);
+        return clone;
     }
 }

@@ -26,18 +26,29 @@ public abstract class AbstractPerson implements Action {
     public final boolean action(int subStamina, int addLvl) {
         boolean act = stamina.subStamina(subStamina);
         if (act) {
-            lvl.add(1);
+            lvl.add(addLvl);
             return true;
         } else
             return false;
     }
-
     public Stamina getStamina() {
         return stamina;
     }
 
-    public void setStamina(Stamina stamina) {
-        this.stamina = stamina;
+    public void setStamina(int stamina) {
+        this.stamina.setStamina(stamina);
+    }
+
+    public void setDownHill(int downHill) {
+        this.downHill = downHill;
+    }
+
+    public void setLvl(int lvl) {
+        this.lvl.setLvl(lvl);
+    }
+
+    public void setSpecialAction(int specialAction) {
+        this.specialAction = specialAction;
     }
 
     public int getDown() {

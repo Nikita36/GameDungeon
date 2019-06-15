@@ -16,4 +16,12 @@ public class Elf extends AbstractPerson {
     public boolean specialAction() {
        return action(specialAction,3);
     }
+    public Elf clone(){
+        Elf clone=new Elf();
+        clone.setStamina(stamina.getStamina());
+        clone.setLvl(lvl.getLvl());
+        clone.setDownHill(downHill);
+        clone.setSpecialAction(specialAction);
+        return clone;
+    }
 }
