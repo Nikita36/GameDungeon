@@ -20,7 +20,7 @@ public class TranslaterForAction {
                 break;
             }
             case 4: {
-                if (personForExchange != null && personage instanceof ManMagician) {//маг обменивается с кем-то и перепроверим маг ли
+                if (personage instanceof ManMagician) {//маг обменивается с кем-то и перепроверим маг ли
                     isAction = ((ManMagician) personage).specialAction(personage, personForExchange);
                 } else {
                     isAction = personage.specialAction();
