@@ -12,6 +12,11 @@ public class LogService {
         LogDAO = new LogDAO();
     }
 
+    /*
+    * Если введешь утильный класс для котрытия сессий и транзакций, то этот класс по сути очень
+    * на него похож
+    * */
+
     public void save(Log entity) {
         LogDAO.openCurrentSessionwithTransaction();
         LogDAO.save(entity);
