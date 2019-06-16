@@ -10,6 +10,12 @@ import org.hibernate.cfg.Configuration;
 import java.util.List;
 
 public class LogDAO {
+
+    /*
+    * Советую под открытие сессий и выполнение транзакций завести утилитный класс,
+    * который оборачивает эти операции и возвращает тебе транзакции и сессии, либо же
+    * вообще сам работает с бд
+    * */
     private Session currentSession;
 
     private Transaction currentTransaction;
