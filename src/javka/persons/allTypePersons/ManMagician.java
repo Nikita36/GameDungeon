@@ -13,16 +13,17 @@ public class ManMagician extends AbstractPerson {
     }
 
     public  boolean specialAction(AbstractPerson first,AbstractPerson second) {//обмен уровней первого с вторым
+        Stamina copyOfStamina = new Stamina(stamina.getMaxStamina());
+        copyOfStamina.setStamina(stamina.getStamina());
         if (second!=null) {//если есть с кем обмениваться,то меняемся
-            if (stamina.subStamina(specialAction)) {
+            if (copyOfStamina.subStamina(specialAction)) {
                 int lvlOfSecond = second.getLvl().getLvl();
                 second.getLvl().setLvl(first.getLvl().getLvl());
                 first.getLvl().setLvl(lvlOfSecond);
                 return true;
-            } else
-                return false;
+            }
         } else {//иначе спускаемся
-            if (stamina.subStamina(specialAction)) {
+            if (copyOfStamina.subStamina(specialAction)) {
                 action(specialAction,1);
                 return true;
             }

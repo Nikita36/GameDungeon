@@ -59,69 +59,90 @@ public class Game {
         while (!isEnd) {
             Dwarf.isSpecialAction = false;//обнуляем действие умения гнома
             for (int i = 0; i < playersInGame.size(); i++) {
-                boolean isAction = false;
-                int numberOfAction;
                 System.out.println("Ходит игрок: " + sequenceOfPlayers.get(i));
-                while (!isAction) { //Пока не совершит действие, не переходим к новому игроку
-                    AbstractPerson curPersonage = playersInGame.get(i).getPersonage();
-                    displayOfAction(curPersonage);
-                    numberOfAction = input.nextInt();
-
-                    if (numberOfAction == 3) {// Если не идёт в разрез с  умением гнома,то можно делать
-                        isAction = translaterForAction.useAction(curPersonage, numberOfAction, null);
-                    } else {
-                        if (Dwarf.isSpecialAction) {
-                            if (curPersonage instanceof Dwarf) {//если он сам гном,то ему на всё пофиг
-                                isAction = translaterForAction.useAction(curPersonage, numberOfAction, null);
-                                if (curPersonage.getLvl().getLvl() >= AllLvlInGame) {//дошёл до конца
-                                    isEnd = true;
-                                    break;
-                                }
-                                lvlOfDwarf = curPersonage.getLvl().getLvl();// Тут гном мог применить спец.умение, поэтому важно знать на каком он уровне.
-                            } else {// если у гнома работает спец. умение и мы хотим спуститься
-                                int lvlCurPersonage = curPersonage.getLvl().getLvl();
-                                AbstractPerson copyOfPerson;
-                                if (curPersonage instanceof Elf) {//при расширении на большее количество персонажей,пришлось бы это убирать(неэффективно)
-                                    copyOfPerson = ((Elf) curPersonage).clone();
-                                } else {
-                                    copyOfPerson = ((ManMagician) curPersonage).clone();
-                                }
-                                AbstractPerson personageForSwap;//Для умения мага мы выбираем ему с кем меняться,если кто-то ходил до него,то
-                                //  он в приоритете. Если такого нет,омбениваемся с тем кто ходит после него.(обобщение для n игроков)
-                                if (i - 1 >= 0) {
-                                    personageForSwap = playersInGame.get(i - 1).getPersonage();
-                                    lvlOfPersonForSwap = playersInGame.get(i - 1).getPersonage().getLvl().getLvl();
-                                } else {
-                                    personageForSwap = playersInGame.get(i + 1).getPersonage();
-                                    lvlOfPersonForSwap = playersInGame.get(i + 1).getPersonage().getLvl().getLvl();
-                                }
-                                translaterForAction.useAction(copyOfPerson, numberOfAction, personageForSwap);// Проверяем что будет,если мы сходим
-                                if (copyOfPerson.getLvl().getLvl() >= lvlOfDwarf) {
-                                    System.out.println("Невозможно применить из-за навыка гнома");
-                                    isAction = false;
-                                } else {
-                                            isAction = translaterForAction.useAction(curPersonage, numberOfAction, null);
-
-                                }
-                            }
-                        } else {
-                            AbstractPerson personageForSwap;//Для умения мага мы выбираем ему с кем меняться,если кто-то ходил до него,то
-                            //  он в приоритете. Если такого нет,омбениваемся с тем кто ходит после него.(обобщение для n игроков)
-                            if (i - 1 >= 0) {
-                                personageForSwap = playersInGame.get(i - 1).getPersonage();
-                            } else {
-                                personageForSwap = playersInGame.get(i + 1).getPersonage();
-                            }
-                                isAction = translaterForAction.useAction(curPersonage, numberOfAction, personageForSwap);
-
-                        }
-                    }
-
-                }
+                doItAction(input, translaterForAction, i);
+                if (isEnd)
+                    break;
             }
             for (int i = 0; i < playersInGame.size(); i++) {//В конце хода добавляем выносливотсь
                 playersInGame.get(i).getPersonage().getStamina().addStamina(2);
             }
+        }
+    }
+
+    public void doItAction(Scanner input, TranslaterForAction translaterForAction, int i) {
+        boolean isAction = false;
+        int numberOfAction;
+        while (!isAction) { //Пока не совершит действие, не переходим к новому игроку
+            AbstractPerson curPersonage = playersInGame.get(i).getPersonage();
+            displayOfAction(curPersonage);
+            numberOfAction = input.nextInt();
+
+            if (numberOfAction == 3) {// Если не идёт в разрез с  умением гнома,то можно делать
+                isAction = translaterForAction.useAction(curPersonage, numberOfAction, null);
+            } else {
+                if (Dwarf.isSpecialAction) {// если применено умение гнома
+                        AbstractPerson copyOfPerson;
+                        if (curPersonage instanceof Elf) {//при расширении на большее количество персонажей,пришлось бы это убирать(неэффективно)
+                            copyOfPerson = ((Elf) curPersonage).clone();
+                        } else {
+                            copyOfPerson = ((ManMagician) curPersonage).clone();
+                        }
+                        AbstractPerson personageForSwap;//Для умения мага мы выбираем ему с кем меняться,если кто-то ходил до него,то
+                        //  он в приоритете. Если такого нет,омбениваемся с тем кто ходит после него.(обобщение для n игроков)
+                        if (i - 1 >= 0) {
+                            personageForSwap = playersInGame.get(i - 1).getPersonage();
+                            lvlOfPersonForSwap = playersInGame.get(i - 1).getPersonage().getLvl().getLvl();
+                        } else {
+                            personageForSwap = playersInGame.get(i + 1).getPersonage();
+                            lvlOfPersonForSwap = playersInGame.get(i + 1).getPersonage().getLvl().getLvl();
+                        }
+                        if (curPersonage instanceof ManMagician) {
+                            if (numberOfAction == 4) {//если маг использует спец. умение
+                                if (curPersonage.getLvl().getLvl() == personageForSwap.getLvl().getLvl() + 1) {//т.е. находится на уровень ниже
+                                    isAction = checkSkillDwarfAndMove(translaterForAction, curPersonage, copyOfPerson, numberOfAction, personageForSwap);
+                                } else {//если под ним никого нет,надо проверить может ли он спуститься
+                                    isAction = checkSkillDwarfAndMove(translaterForAction, curPersonage, copyOfPerson, numberOfAction, null);
+                                }
+                            } else {//для всех действий не спец умений мага
+                                isAction = checkSkillDwarfAndMove(translaterForAction, curPersonage, copyOfPerson, numberOfAction, null);
+                            }
+                        } else {
+                            isAction = checkSkillDwarfAndMove(translaterForAction, curPersonage, copyOfPerson, numberOfAction, null);
+                        }
+                } else {// еслм умение гнома не применено(возможно тут гном)
+                    AbstractPerson personageForSwap;//Для умения мага мы выбираем ему с кем меняться,если кто-то ходил до него,то
+                    //  он в приоритете. Если такого нет,омбениваемся с тем кто ходит после него.(обобщение для n игроков)
+                    if (i - 1 >= 0) {
+                        personageForSwap = playersInGame.get(i - 1).getPersonage();
+                        lvlOfPersonForSwap = playersInGame.get(i - 1).getPersonage().getLvl().getLvl();
+                    } else {
+                        personageForSwap = playersInGame.get(i + 1).getPersonage();
+                        lvlOfPersonForSwap = playersInGame.get(i + 1).getPersonage().getLvl().getLvl();
+                    }
+
+                    if (curPersonage instanceof ManMagician) {//если маг,надо проверить спец. умение
+                        if (numberOfAction == 4) {//если маг использует спец. умение
+                            if (curPersonage.getLvl().getLvl() == personageForSwap.getLvl().getLvl() + 1) {//т.е. находится на уровень ниже
+                                isAction = translaterForAction.useAction(curPersonage, numberOfAction, personageForSwap);
+                            } else {//просто спускаем
+                                isAction = translaterForAction.useAction(curPersonage, numberOfAction, null);
+                            }
+                        } else {//для всех действий не спец умений
+                            isAction = translaterForAction.useAction(curPersonage, numberOfAction, null);
+                        }
+                    } else {//если не маг ,то свободно делай
+                        isAction = translaterForAction.useAction(curPersonage, numberOfAction, null);
+                        if (curPersonage instanceof Dwarf){
+                            lvlOfDwarf = curPersonage.getLvl().getLvl();
+                        }
+                    }
+                }
+            }
+        }
+        if (playersInGame.get(i).getPersonage().getLvl().getLvl() >= AllLvlInGame) {
+            isEnd = true;
+            System.out.println(playersInGame.get(i).getName() + " поздравляем, вы победили!");
         }
     }
 
@@ -147,6 +168,18 @@ public class Game {
         System.out.println("                   2 - Быстрый спуск(продвигает на 2 уровня ниже): " + curPersonage.getDownHill() + " выносливости");
         System.out.println("                   3 - Отдых(добавляет 3 выносливости): " + 0 + " выносливости");
         System.out.println("                   4 - Специальное умение: " + curPersonage.getSpecialAction() + " выносливости");
+    }
+
+    public boolean checkSkillDwarfAndMove(TranslaterForAction translaterForAction, AbstractPerson
+            curPersonage, AbstractPerson copyOfPerson, int numberOfAction, AbstractPerson personageForSwap) {
+
+        translaterForAction.useAction(copyOfPerson, numberOfAction, personageForSwap);// Проверяем что будет,если мы сходим
+        if (copyOfPerson.getLvl().getLvl() >= lvlOfDwarf) {
+            System.out.println("Невозможно применить из-за навыка гнома");
+            return false;
+        } else {
+            return translaterForAction.useAction(curPersonage, numberOfAction, null);
+        }
     }
 
     public static void main(String[] args) {

@@ -33,4 +33,8 @@ public class Stamina {
             stamina -= value;
         return true;
     }
+
+    public int getMaxStamina() {
+        return maxStamina;
+    }
 }
