@@ -12,7 +12,7 @@ public enum NumberOfActionToString {
    public static NumberOfActionToString valueOf(int numberOfAction){
          switch (numberOfAction){
              case 1: return down;
-             case 2: return down;
+             case 2: return downhill;
              case 3: return relexation;
              case 4:return specialAction;
          }

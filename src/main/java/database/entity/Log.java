@@ -107,4 +107,9 @@ public class Log {
         result = 31 * result + (nameofaction != null ? nameofaction.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Игрок: "+player+" уровень: "+lvl+" выносливость: "+" "+stamina+" "+nameofstep+nameofaction;
+    }
 }
