@@ -1,5 +1,7 @@
 package database.entity;
 
+import player.Player;
+
 import javax.persistence.*;
 
 @Entity
@@ -112,4 +114,46 @@ public class Log {
     public String toString() {
         return "Игрок: "+player+" уровень: "+lvl+" выносливость: "+" "+stamina+" "+nameofstep+nameofaction;
     }
+
+    // не уверен в правильности билдера, писал на скорую руку
+    public static class LogBuilder {
+        private Log log;
+
+
+        public LogBuilder withPlayer(Integer player) {
+            log.setPlayer(player);
+            return this;
+        }
+
+        public LogBuilder withLvl(Integer lvl) {
+            log.setLvl(lvl);
+            return this;
+        }
+
+        public LogBuilder withStamina(Integer stamina) {
+            log.setStamina(stamina);
+            return this;
+        }
+
+        public LogBuilder withNameOfStep(String nameOfStep) {
+            log.setNameofstep(nameOfStep);
+            return this;
+        }
+
+        public LogBuilder withNameofAction(String nameOfAction) {
+            log.setNameofaction(nameOfAction);
+            return this;
+        }
+
+        public LogBuilder reset() {
+            log = new Log();
+            return this;
+        }
+
+        public Log build() {
+            return log;
+        }
+    }
+
+    public static LogBuilder builder;
 }

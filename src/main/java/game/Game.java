@@ -48,6 +48,11 @@ public class Game {
             e.printStackTrace();
         }
         System.out.println("Игрок " + randomInt);
+        /*
+        * Не так уж и много логики:
+        * 1) Создаешь Map на n игроков(number -> player), которая тебе также понадобится и для их инициализации
+        * 2) В очередь добавляешь первым игрока с соотвествующим номером, а затем всех остальных из мапы
+        * */
         if (randomInt == 1) {//не очень красиво, но для обобщения на N игроков придётся делать много доп логики
             playersInGame.add(player1);
             playersInGame.add(player2);
@@ -60,13 +65,17 @@ public class Game {
             sequenceOfPlayers.add(1);
         }
         Scanner input = new Scanner(System.in);
+        // Я только посмотрев внуть класса понял, что он кастует цифры к действиям, но не совсем понимаю зачем такой ужас
+        // с неймингом, сделал бы его ActionReader'ом что-ли, это не доебка, правда непонятно, что за переводчик действий
         TranslaterForAction translaterForAction = new TranslaterForAction();
         while (!isEnd) {
             Dwarf.isSpecialAction = false;//обнуляем действие умения гнома
             List<Integer> actions= new ArrayList<>();
             int j;
             for (j=0;j < playersInGame.size(); j++) {
+                // Если бы ты использовал map не пришлось бы использовать список с игроками и список с номерами
                 System.out.println("Ходит игрок: " + sequenceOfPlayers.get(j));
+                //опять стряшное имя
                 actions.add(j,doItAction(input, translaterForAction, j, step));
                 if (isEnd){//выходим из цикла,если есть победитель
                     break;
@@ -77,12 +86,32 @@ public class Game {
 
                 AbstractPerson person = playersInGame.get(j).getPersonage();
                 NumberOfActionToString actionEnum = NumberOfActionToString.valueOf(actions.get(j));
-                Log log = new Log(j+1, person.getLvl().getLvl(), person.getStamina().getStamina(), " Конец: " + step + " шага", " Было использовано умение: "+actionEnum.name());
+                // Для лога было бы круто применить билдер, чтобы избежать такого крутого (нет) конотруктора, вот почуствуй разницу
+                Log log = new Log(
+                        j+1,
+                        person.getLvl().getLvl(),
+                        person.getStamina().getStamina(),
+                        " Конец: " + step + " шага",
+                        " Было использовано умение: "+actionEnum.name()
+                );
+                // аналогичный результат можно получить разнеся вот так строчки конструктора, но так неправильно))))0, к тому же неочевиден порядок
+                // аргументов в конструкторе, когда в билдере напротив, каждый шаг проинспектирован в названии метода
+                Log log1 = Log.builder.reset()
+                        .withPlayer(j + 1)
+                        .withLvl(person.getLvl().getLvl())
+                        .withStamina(person.getStamina().getStamina())
+                        .withNameOfStep(" Конец: " + step + " шага")
+                        .withNameofAction(" Было использовано умение: "+actionEnum.name())
+                        .build();
                 logService.save(log);
                 break;
             }
+            // Ты зря совмещаешь логику игры и запись в лог, это плохо влияет на код
+            // Лучше было бы отдельно вести игровые действия
             for (int i = 0; i < playersInGame.size(); i++) {//В конце хода добавляем выносливотсь
                 playersInGame.get(i).getPersonage().getStamina().addStamina(2);
+                // и это вместо цикла кстати
+                //playersInGame.stream().map(x -> x.getPersonage()).forEach(x -> x.getStamina().addStamina(2));
                 AbstractPerson person = playersInGame.get(i).getPersonage();
                 NumberOfActionToString actionEnum = NumberOfActionToString.valueOf(actions.get(i));
                 Log log = new Log(i+1, person.getLvl().getLvl(), person.getStamina().getStamina(), " Конец: " + step + " шага", " Было использовано умение: "+actionEnum.name());

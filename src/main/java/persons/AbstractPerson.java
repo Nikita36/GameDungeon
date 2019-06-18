@@ -24,12 +24,19 @@ public abstract class AbstractPerson implements Action {
     }
 
     public final boolean action(int subStamina, int addLvl) {
+        //boolean переменные именуют начиная с is(was), типа isAct, так намного читабельнее
         boolean act = stamina.subStamina(subStamina);
-        if (act) {
-            lvl.add(addLvl);
-            return true;
-        } else
+//        if (act) {
+//            //аналогично неймнинг addLvl вызывает большие вопросы
+//            lvl.add(addLvl);
+//            return true;
+//        } else
+//            return false;
+        //лучше переписать так
+        if(!act)
             return false;
+        lvl.add(addLvl);
+        return true;
     }
     public Stamina getStamina() {
         return stamina;
